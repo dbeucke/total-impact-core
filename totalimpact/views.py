@@ -600,3 +600,8 @@ def update_user(userid=''):
     resp.mimetype = "application/json"
     return resp
 
+@app.route('/mu-f3bef567-df128352-ad511b91-9f71f771', methods=["GET"])
+def newrelic_validation():
+    resp = make_response("42", 200)
+    return resp
+
