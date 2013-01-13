@@ -509,7 +509,7 @@ def lowercase_aliases():
 
 def update_github():
     from totalimpact import item, tiredis
-    myredis = tiredis.from_url(os.getenv("REDISTOGO_URL"), db=0)
+    myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=0)
 
     view_name = "queues/by_alias"
     view_rows = db.view(view_name, include_docs=False)
@@ -538,7 +538,7 @@ def update_github():
 
 def fix_github_year():
     from totalimpact import item, tiredis
-    myredis = tiredis.from_url(os.getenv("REDISTOGO_URL"), db=0)
+    myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=0)
 
     view_name = "queues/by_alias"
     view_rows = db.view(view_name, include_docs=True)

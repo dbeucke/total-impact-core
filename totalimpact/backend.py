@@ -341,11 +341,11 @@ class Backend(Worker):
 def main():
     mydao = dao.Dao(os.environ["CLOUDANT_URL"], os.environ["CLOUDANT_DB"])
 
-    myredis = tiredis.from_url(os.getenv("REDISTOGO_URL"))
+    myredis = tiredis.from_url(os.getenv("REDIS_URL"))
     alias_queue = RedisQueue("aliasqueue", myredis)
     # to clear alias_queue:
     #import redis, os
-    #myredis = redis.from_url(os.getenv("REDISTOGO_URL"))
+    #myredis = redis.from_url(os.getenv("REDIS_URL"))
     #myredis.delete(["aliasqueue"])
 
 
