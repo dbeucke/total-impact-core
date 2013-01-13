@@ -1,7 +1,8 @@
-from totalimpact import default_settings
-import sys, os
+import sys
+import os
 import logging
 from flask import Flask
+from totalimpact import default_settings
 
 # see http://wiki.pylonshq.com/display/pylonscookbook/Alternative+logging+configuration
 logging.basicConfig(
