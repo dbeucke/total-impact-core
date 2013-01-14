@@ -89,8 +89,10 @@ def is_over_quota(api_key, mydao):
         return True
     return False
 
-@Retry(3, ResourceConflict, 0.1)
+@Retry(6, ResourceConflict, 0.1)
 def save_registration_data(api_user_id, alias_key, registration_dict, mydao):
+    logger.debug("in save_registration_data with {alias_key}".format(
+        alias_key=alias_key))
     api_user_doc = mydao.get(api_user_id)
     api_user_doc["registered_items"][alias_key] = registration_dict
     mydao.save(api_user_doc)
@@ -99,6 +101,9 @@ def save_registration_data(api_user_id, alias_key, registration_dict, mydao):
 def add_registration_data(alias, tiid, api_key, mydao):
     if is_internal_key(api_key):
         return False
+
+    logger.info("adding registration for {alias} for {tiid} and {api_key}".format(
+        alias=alias, tiid=tiid, api_key=api_key))
 
     api_user_id = get_api_user_id_by_api_key(api_key, mydao)
     now = datetime.datetime.now().isoformat()
