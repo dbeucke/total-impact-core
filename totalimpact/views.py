@@ -156,11 +156,9 @@ def get_item_from_namespace_nid(namespace, nid, format=None, include_history=Fal
             logger.debug("ApiLimitExceededException")
             pass
 
-    logger.debug("now to go get the item")
     tiid = item_module.get_tiid_by_alias(namespace, nid, mydao)
     if not tiid:
         abort(404, "Item not in database. Call POST to register it.")
-    logger.debug("got the tiid")
     return get_item_from_tiid(tiid, format, include_history)
 
 
@@ -176,8 +174,6 @@ def get_item_from_tiid(tiid, format=None, include_history=False):
     except (LookupError, AttributeError):
         abort(404)
 
-    logger.debug("got item")
-
     if not item:
         abort(404)
 
@@ -187,8 +183,6 @@ def get_item_from_tiid(tiid, format=None, include_history=False):
     else:
         response_code = 200
         item["currently_updating"] = False
-
-    logger.debug("going to clean item")
 
     clean_item = item_module.clean_for_export(item)
     resp = make_response(json.dumps(clean_item, sort_keys=True, indent=4),

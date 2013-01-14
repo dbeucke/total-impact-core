@@ -163,5 +163,4 @@ def register_item(alias, api_key, myredis, mydao):
         mixpanel.track("Create:Register", {"Namespace":namespace, 
                                             "API Key":api_key})
 
-    logger.debug("done registering")
     return tiid
