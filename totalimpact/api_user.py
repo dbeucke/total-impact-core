@@ -89,13 +89,13 @@ def is_over_quota(api_key, mydao):
         return True
     return False
 
-@Retry(6, ResourceConflict, 0.1)
+@Retry(6, ResourceConflict, 0.4)
 def save_registration_data(api_user_id, alias_key, registration_dict, mydao):
     logger.debug("in save_registration_data with {alias_key}".format(
         alias_key=alias_key))
     api_user_doc = mydao.get(api_user_id)
     api_user_doc["registered_items"][alias_key] = registration_dict
-    mydao.save(api_user_doc)
+    mydao.db.save(api_user_doc)
     return True
 
 def add_registration_data(alias, tiid, api_key, mydao):
