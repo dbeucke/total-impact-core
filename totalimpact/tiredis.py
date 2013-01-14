@@ -3,6 +3,21 @@ import redis, logging, json
 
 logger = logging.getLogger("ti.tiredis")
 
+def set_refsets(self, myrefsets, myrefsets_histograms):
+    expire = 60*60*24  # for a day    
+    key = "myrefsets" 
+    self.set_value(key, myrefsets, expire)
+    key = "myrefsets_histograms" 
+    self.set_value(key, myrefsets_histograms, expire)
+
+def get_refsets(self)
+    try:
+        myrefsets = self.get_value("myrefsets")
+        myrefsets_histograms = self.get_value("myrefsets_histograms")
+    except TypeError:
+        myrefsets = None
+        myrefsets_histograms = None
+    return(myrefsets, myrefsets_histograms)
 
 def from_url(url, db=0):
     r = redis.from_url(url, db)

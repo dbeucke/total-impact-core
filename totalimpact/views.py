@@ -21,15 +21,8 @@ logger.setLevel(logging.DEBUG)
 mydao = dao.Dao(os.environ["CLOUDANT_URL"], os.getenv("CLOUDANT_DB"))
 myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=0) #main app is on DB 0
 
-myrefsets = None
-myrefsets_histograms = None
-
-def build_refsets():
-    logger.debug("Building reference sets")
-
-    global myrefsets 
-    global myrefsets_histograms
-
+(myrefsets, myrefsets_histograms) = tiredis.get_refsets()
+if not myrefsets:
     try:
         (myrefsets, myrefsets_histograms) = collection.build_all_reference_lookups(myredis, mydao)
         logger.debug("Reference sets dict has %i keys" %len(myrefsets.keys()))
@@ -175,9 +168,6 @@ def get_item_from_namespace_nid(namespace, nid, format=None, include_history=Fal
 '''
 @app.route('/item/<tiid>', methods=['GET'])
 def get_item_from_tiid(tiid, format=None, include_history=False):
-    if not myrefsets:
-        build_refsets()
-
     logger.debug("In get_item_from_tiid with tiid".format(tiid=tiid))
 
     try:
@@ -301,9 +291,6 @@ returns a collection object and the items
 @app.route('/collection/<cid>.<format>', methods=['GET'])
 @app.route('/v1/collection/<cid>.<format>', methods=['GET'])
 def collection_get(cid='', format="json", include_history=False):
-    if not myrefsets:
-        build_refsets()
-
     coll = mydao.get(cid)
     if not coll:
         abort(404)
@@ -520,9 +507,6 @@ def get_collection_titles(cids=''):
 @app.route("/collections/reference-sets")
 @app.route("/v1/collections/reference-sets")
 def reference_sets():
-    if not myrefsets:
-        build_refsets()
-
     resp = make_response(json.dumps(myrefsets, indent=4), 200)
     resp.mimetype = "application/json"
     return resp
@@ -530,9 +514,6 @@ def reference_sets():
 @app.route("/collections/reference-sets-histograms")
 @app.route("/v1/collections/reference-sets-histograms")
 def reference_sets_histograms():
-    if not myrefsets:
-        build_refsets()
-    
     rows = []
     header_added = False
     for genre in myrefsets_histograms:
