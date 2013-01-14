@@ -90,7 +90,7 @@ def is_over_quota(api_key, mydao):
     return False
 
 @Retry(3, ResourceConflict, 0.1)
-def save_registration_data(api_user_id, alias_key, registration_dict):
+def save_registration_data(api_user_id, alias_key, registration_dict, mydao):
     api_user_doc = mydao.get(api_user_id)
     api_user_doc["registered_items"][alias_key] = registration_dict
     mydao.save(api_user_doc)
@@ -110,7 +110,7 @@ def add_registration_data(alias, tiid, api_key, mydao):
     alias_key = ":".join(alias)
     registered = False
     try:
-        registered = save_registration_data(api_user_id, alias_key, registration_dict)
+        registered = save_registration_data(api_user_id, alias_key, registration_dict, mydao)
     except ResourceConflict:
         logger.error("Registration failed for {alias_key} for {tiid} and {api_key}".format(
             alias_key=alias_key, tiid=tiid, api_key=api_key))
