@@ -10,7 +10,7 @@ def set_refsets(self, myrefsets, myrefsets_histograms):
     key = "myrefsets_histograms" 
     self.set_value(key, myrefsets_histograms, expire)
 
-def get_refsets(self)
+def get_refsets(self):
     try:
         myrefsets = self.get_value("myrefsets")
         myrefsets_histograms = self.get_value("myrefsets_histograms")
@@ -124,6 +124,8 @@ redis.Redis.set_reference_histogram_dict = set_reference_histogram_dict
 redis.Redis.get_reference_histogram_dict = get_reference_histogram_dict
 redis.Redis.set_reference_lookup_dict = set_reference_lookup_dict
 redis.Redis.get_reference_lookup_dict = get_reference_lookup_dict
+redis.Redis.set_refsets = set_refsets
+redis.Redis.get_refsets = get_refsets
 
 
 

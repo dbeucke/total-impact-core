@@ -21,11 +21,12 @@ logger.setLevel(logging.DEBUG)
 mydao = dao.Dao(os.environ["CLOUDANT_URL"], os.getenv("CLOUDANT_DB"))
 myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=0) #main app is on DB 0
 
-(myrefsets, myrefsets_histograms) = tiredis.get_refsets()
+(myrefsets, myrefsets_histograms) = myredis.get_refsets()
 if not myrefsets:
     try:
         (myrefsets, myrefsets_histograms) = collection.build_all_reference_lookups(myredis, mydao)
         logger.debug("Reference sets dict has %i keys" %len(myrefsets.keys()))
+        myredis.set_refsets(myrefsets, myrefsets_histograms)
     except (couchdb.ResourceNotFound, LookupError, AttributeError), e:
         logger.error("Exception %s: Unable to load reference sets" % (e.__repr__()))
 
