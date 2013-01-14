@@ -87,23 +87,32 @@ def is_over_quota(api_key, mydao):
         return True
     return False
 
+@Retry(3, Exception, 0.1)
+def save_registration_data(api_user_id, alias_key, registration_dict):
+    api_user_doc = mydao.get(api_user_id)
+    api_user_doc["registered_items"][alias_key] = registration_dict
+    mydao.save(api_user_doc)
+    return True
 
 def add_registration_data(alias, tiid, api_key, mydao):
     if is_internal_key(api_key):
         return False
 
-    alias_key = ":".join(alias)
-
     api_user_id = get_api_user_id_by_api_key(api_key, mydao)
-    api_user_doc = mydao.get(api_user_id)
-
     now = datetime.datetime.now().isoformat()
-    api_user_doc["registered_items"][alias_key] = {
+    registration_dict = {
         "registered_date": now,
         "tiid": tiid
     }
-    mydao.save(api_user_doc)
-    return True
+
+    alias_key = ":".join(alias)
+    registered = False
+    try:
+        registered = save_registration_data(api_user_id, alias_key, registration_dict)
+    except Exception:
+        logger.error("Registration failed for {alias_key} for {tiid} and {api_key}".format(
+            alias_key=alias_key, tiid=tiid, api_key=api_key))
+    return registered
 
 
 def get_api_user_id_by_api_key(api_key, mydao):
