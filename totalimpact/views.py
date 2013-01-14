@@ -156,9 +156,11 @@ def get_item_from_namespace_nid(namespace, nid, format=None, include_history=Fal
             logger.debug("ApiLimitExceededException")
             pass
 
+    logger.debug("now to go get the item")
     tiid = item_module.get_tiid_by_alias(namespace, nid, mydao)
     if not tiid:
         abort(404, "Item not in database. Call POST to register it.")
+    logger.debug("got the tiid")
     return get_item_from_tiid(tiid, format, include_history)
 
 
@@ -167,6 +169,8 @@ def get_item_from_namespace_nid(namespace, nid, format=None, include_history=Fal
 '''
 @app.route('/item/<tiid>', methods=['GET'])
 def get_item_from_tiid(tiid, format=None, include_history=False):
+
+    logger.debug("In get_item_from_tiid with tiid".format(tiid=tiid))
 
     try:
         item = item_module.get_item(tiid, myrefsets, mydao, include_history)
