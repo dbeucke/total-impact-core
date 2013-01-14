@@ -1,5 +1,5 @@
 import json, uuid, couchdb, time, logging, os, re, redis
-from couchdb import ResourceNotFound, PreconditionFailed
+from couchdb import ResourceNotFound, PreconditionFailed, ResourceConflict
 
 from totalimpact.utils import Retry
 

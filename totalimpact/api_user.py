@@ -1,6 +1,8 @@
 import datetime, shortuuid, os
 
 from totalimpact import item, mixpanel
+from totalimpact.utils import Retry
+from couchdb import ResourceConflict
 
 import logging
 logger = logging.getLogger('ti.api_user')
@@ -87,7 +89,7 @@ def is_over_quota(api_key, mydao):
         return True
     return False
 
-@Retry(3, Exception, 0.1)
+@Retry(3, ResourceConflict, 0.1)
 def save_registration_data(api_user_id, alias_key, registration_dict):
     api_user_doc = mydao.get(api_user_id)
     api_user_doc["registered_items"][alias_key] = registration_dict
@@ -109,7 +111,7 @@ def add_registration_data(alias, tiid, api_key, mydao):
     registered = False
     try:
         registered = save_registration_data(api_user_id, alias_key, registration_dict)
-    except Exception:
+    except ResourceConflict:
         logger.error("Registration failed for {alias_key} for {tiid} and {api_key}".format(
             alias_key=alias_key, tiid=tiid, api_key=api_key))
     return registered
