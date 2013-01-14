@@ -167,8 +167,6 @@ def get_item_from_namespace_nid(namespace, nid, format=None, include_history=Fal
 '''
 @app.route('/item/<tiid>', methods=['GET'])
 def get_item_from_tiid(tiid, format=None, include_history=False):
-    logger.debug("In get_item_from_tiid with tiid".format(tiid=tiid))
-
     try:
         item = item_module.get_item(tiid, myrefsets, mydao, include_history)
     except (LookupError, AttributeError):

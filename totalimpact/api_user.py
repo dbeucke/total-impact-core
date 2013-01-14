@@ -125,10 +125,6 @@ def add_registration_data(alias, tiid, api_key, mydao):
 def get_api_user_id_by_api_key(api_key, mydao):
     if is_internal_key(api_key):
         return None
-
-    logger.debug("In get_api_user_by_api_key with {api_key}".format(
-        api_key=api_key))
-
     # for expl of notation, see http://packages.python.org/CouchDB/client.html#viewresults# for expl of notation, see http://packages.python.org/CouchDB/client.html#viewresults
     res = mydao.view('api_users_by_api_key/api_users_by_api_key')
 
@@ -139,7 +135,6 @@ def get_api_user_id_by_api_key(api_key, mydao):
     api_user_id = None
     if matches.rows:
         api_user_id = matches.rows[0]["id"]
-        logger.debug("found a match for {api_key}!".format(api_key=api_key))
     else:
         logger.debug("no match for api_key {api_key}!".format(api_key=api_key))
     return (api_user_id)
