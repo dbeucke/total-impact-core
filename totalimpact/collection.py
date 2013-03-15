@@ -50,18 +50,22 @@ def get_titles(cids, mydao):
 def get_collection_with_items_for_client(cid, myrefsets, myredis, mydao, include_history=False):
     startkey = [cid, 0]
     endkey = [cid, "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"]
+    logging.info("before view")
     view_response = mydao.db.view("collections_with_items/collections_with_items", 
                         include_docs=True, 
                         startkey=startkey, 
                         endkey=endkey)
     # the first row is the collection document
+    logging.info("before rows")
     first_row = view_response.rows[0]
     collection = first_row.doc
+    logging.info("before try")
     try:
         del collection["ip_address"]
     except KeyError:
         pass
 
+    logging.info("before build item for client")
     # start with the 2nd row, since 1st row is the collection document
     collection["items"] = []
     if len(view_response.rows) > 1:
@@ -84,6 +88,7 @@ def get_collection_with_items_for_client(cid, myrefsets, myredis, mydao, include
 
     logging.info("Got items for collection %s" %cid)
     # print json.dumps(collection, sort_keys=True, indent=4)
+
     return (collection, something_currently_updating)
 
 def clean_value_for_csv(value_to_store):
