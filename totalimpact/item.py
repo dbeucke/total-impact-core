@@ -80,8 +80,8 @@ def build_item_for_client(item, myrefsets, mydao, include_history=False):
     for metric_name in metrics:
 
         # Patch to hide Facebook data while we investigate potentially broken API.
-        if "facebook" in metric_name.lower():
-            continue
+        #if "facebook" in metric_name.lower():
+        #    continue
 
         #delete the raw history from what we return to the client for now
         if not include_history:
@@ -90,12 +90,12 @@ def build_item_for_client(item, myrefsets, mydao, include_history=False):
             except KeyError:
                 pass
 
+        if metric_name in all_static_meta.keys():  # make sure we still support this metrics type
+            # add static data
+            metrics[metric_name]["static_meta"] = all_static_meta[metric_name]            
+
         if "year" in item["biblio"]:
             if metric_name in all_static_meta.keys():  # make sure we still support this metrics type
-                # add static data
-
-                metrics[metric_name]["static_meta"] = all_static_meta[metric_name]            
-
                 # add normalization values
                 # need year to calculate normalization below
                 try:
