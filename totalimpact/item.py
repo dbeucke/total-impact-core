@@ -90,23 +90,24 @@ def build_item_for_client(item, myrefsets, mydao, include_history=False):
             except KeyError:
                 pass
 
-        if metric_name in all_static_meta.keys():  # make sure we still support this metrics type
-            # add static data
+        if "year" in item["biblio"]:
+            if metric_name in all_static_meta.keys():  # make sure we still support this metrics type
+                # add static data
 
-            metrics[metric_name]["static_meta"] = all_static_meta[metric_name]            
+                metrics[metric_name]["static_meta"] = all_static_meta[metric_name]            
 
-            # add normalization values
-            # need year to calculate normalization below
-            try:
-                year = int(item["biblio"]["year"])
-                if year < 2002:
-                    year = 2002
-                raw = metrics[metric_name]["values"]["raw"]
-                normalized_values = get_normalized_values(genre, host, year, metric_name, raw, myrefsets)
-                metrics[metric_name]["values"].update(normalized_values)
-            except (KeyError, ValueError):
-                logger.error("No good year in biblio for item {tiid}, no normalization".format(
-                    tiid=item["_id"]))
+                # add normalization values
+                # need year to calculate normalization below
+                try:
+                    year = int(item["biblio"]["year"])
+                    if year < 2002:
+                        year = 2002
+                    raw = metrics[metric_name]["values"]["raw"]
+                    normalized_values = get_normalized_values(genre, host, year, metric_name, raw, myrefsets)
+                    metrics[metric_name]["values"].update(normalized_values)
+                except (KeyError, ValueError):
+                    logger.error("No good year in biblio for item {tiid}, no normalization".format(
+                        tiid=item["_id"]))
 
     # ditch metrics we don't have static_meta for:
     item["metrics"] = {k:v for k, v in item["metrics"].iteritems() if "static_meta"  in v}
