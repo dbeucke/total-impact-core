@@ -72,6 +72,7 @@ def get_collection_with_items_for_client(cid, myrefsets, myredis, mydao, include
         for row in view_response.rows[1:]:
             item_doc = row.doc 
             try:
+                logging.info("building one item")
                 item_for_client = item_module.build_item_for_client(item_doc, myrefsets, mydao, include_history)
             except (KeyError, TypeError):
                 logging.info("Couldn't build item {item_doc}, excluding it from the returned collection {cid}".format(
